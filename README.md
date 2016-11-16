@@ -1,7 +1,7 @@
 # Clean-and-Combine
 Clean and Combine is currently a package I am building which makes life a little easier in metabolomics data processing. 
 Often a lab will look at the same targeted metabolite profile in samples.  In some mass spec integration and quantifi
-cation softwares, after integrating the peaks, the targeted metabolite data is output as text file which needs to be copied to excel.  
+cation softwares, after integrating the peaks, the targeted metabolite data is output as text file which needs to be copied to excel. 
 From this the user must then remove concentrations or values below the limit of detection (LOD) or limit of quantification (LOQ),
 then merge all of the targeted metabolites into a single data sheet.  This is not only time consuming but leaves room for human error to
 compromise the integrity of the data.
