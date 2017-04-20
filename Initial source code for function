@@ -1,0 +1,52 @@
+Conc="" # enter vector name associated with your concentration data is stored
+s.n="" # enter vector name assoiated with your signal to noise 
+setwd() # set your working directory to the folder containing the files to clean and combine
+
+
+## This Code Builds The Function ##
+CleanCombine<-function(){
+    store.name=list.files()
+    justname=character()
+      for (i in 1:length(store.name)){
+        justname[i]=strsplit(store.name[i], split="[.]")[[1]][1]
+      }
+
+    # Reading in data files from folder
+    for(i in 1:length(justname)){
+      Y=read.table(store.name[i], header = T, sep = ",")
+      rownames(Y)=Y$Name
+      Y=Y[grepl(pattern="analyte",Y$Type,ignore.case = T)==T,] ## making a dataframe of the analytes
+            
+            if(i==1){
+              #Building concentration into the dataframe mydat for first file
+              mydat=data.frame(Y[[Conc]])
+              rownames(mydat)=Y$Name
+              #Bringing the corresponding signal-to-noise into the dataframe SN
+              SN=data.frame(Y[[s.n]])
+              rownames(SN)=Y$Name
+            }
+            
+            else{
+              #Building concentration into the dataframe mydat for 2nd:end files
+              mydat=data.frame(mydat, Y[[Conc]])
+              try(if((all.equal.character(rownames(mydat), rownames(Y)))==F)
+                stop(print(rep("Sample concentrations not aligned", time=1)))) #If names do not match, will report back with "Error"
+              #Building signal-to-noise into the dataframe SN for 2nd:end files
+              SN=data.frame(SN, Y[[s.n]])
+              try(if((all.equal.character(rownames(SN), rownames(Y)))==F)
+                stop(print(rep("Sample signal-to-noises not aligned", time=1)))) #If names do not match, will report back with "Error"
+
+            }
+    }
+    colnames(mydat)=justname
+    colnames(SN)=justname
+    try(if((all.equal.character(colnames(SN), colnames(mydat)))==F)
+                stop(print(rep("Columns not aligned between data sets", time=1)))) #If names do not match, will report back with "Error"
+    save(mydat, file="mydat.rda")
+    save(SN, file="sn.rda")
+}
+
+# To execute function
+CleanCombine() # executing the function
+
+load("mydat.rda") # loading in merged data 
